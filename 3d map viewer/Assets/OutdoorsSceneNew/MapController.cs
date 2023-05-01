@@ -12,10 +12,7 @@ public class MapController : MonoBehaviour
         uiManager = FindObjectOfType<UIManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    
 
     public void UpdateGeoPosition(DataUpdater dataUpdater, double longitude, double latitude, double altitude)
     {
