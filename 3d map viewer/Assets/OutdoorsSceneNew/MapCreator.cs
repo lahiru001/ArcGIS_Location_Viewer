@@ -13,10 +13,19 @@ using System;
 [ExecuteAlways]
 public class MapCreator : MonoBehaviour
 {
+    public Location[] locations = new Location[4];
+    public double latitude;
+    public double longitude;
+    public double altitude;
+    public double yAxisRotation;
+    public double xAxisRotation;
+
     public string APIKey = "AAPK59d70ee5fef243ac8dc55bddcd1c6c102QACX9PdlppIgai-sIJjqdyvNl3VcqrAl833srreHxlfzF3pgONA9Iq1Z_DwqcZd";
     private ArcGISMapComponent arcGISMapComponent;
-    private ArcGISPoint geographicCoordinates = new ArcGISPoint(-74.054921, 40.691242, 3000, ArcGISSpatialReference.WGS84());
+    private ArcGISPoint geographicCoordinates = new ArcGISPoint(-74.054921, 40.691242, 300, ArcGISSpatialReference.WGS84());
     private ArcGISCameraComponent cameraComponent;
+    public ArcGISLocationComponent cameraLocationComponent;
+    private MapController mapController;
 
     private void CreateArcGISMapComponent()
     {
@@ -73,8 +82,7 @@ public class MapCreator : MonoBehaviour
             cameraGameObject.AddComponent<ArcGISRebaseComponent>();
         }
 
-        var cameraLocationComponent = cameraComponent.GetComponent<ArcGISLocationComponent>();
-
+            cameraLocationComponent = cameraComponent.GetComponent<ArcGISLocationComponent>();
         if (!cameraLocationComponent)
         {
             cameraLocationComponent = cameraComponent.gameObject.AddComponent<ArcGISLocationComponent>();
@@ -83,12 +91,52 @@ public class MapCreator : MonoBehaviour
             cameraLocationComponent.Rotation = new ArcGISRotation(65, 68, 0);
         }
     }
+    public void SetGeoPosition(double longitude, double latitude, double altitude)
+    {
+        ArcGISPoint geographicCoordinates = new ArcGISPoint(longitude, latitude, altitude, ArcGISSpatialReference.WGS84());
+        cameraLocationComponent.Position = geographicCoordinates;
+        Debug.Log("##MAPCREATOR FUNCTION>> Altitude :" + altitude + "Longitude :" + longitude + "Latitude :" + latitude);
+    }
+    public void CheckGeoPositionChanges()
+    {
+        if (((cameraLocationComponent.Position.X != longitude)||(cameraLocationComponent.Position.Y != latitude))|| (cameraLocationComponent.Position.Z != altitude))//(cameraLocationComponent.Position.Y != latitude) || (cameraLocationComponent.Position.Z != longitude)
+        {
+            double longitudeLocal = cameraLocationComponent.Position.X;
+            double latitudeLocal = cameraLocationComponent.Position.Y;
+            double altitudeLocal = cameraLocationComponent.Position.Z;
+            bool t = (cameraLocationComponent.Position.X != longitude);
+            mapController.UpdateGeoPosition(MapController.DataUpdater.MapCreator, longitudeLocal, latitudeLocal, altitudeLocal);
+            Debug.Log("CheckGeoPositionChanges() inside if");
+            Debug.Log("CheckGeoPositionChanges() position X " + cameraLocationComponent.Position.X + "longitude" + longitude);
+            Debug.Log("CheckGeoPositionChanges() position Y " + cameraLocationComponent.Position.Y + "latitude" + latitude);
+            Debug.Log("CheckGeoPositionChanges() position Z " + cameraLocationComponent.Position.Z + "altitude" + altitude);
+            Debug.Log("CheckGeoPositionChanges() T " +  t);
 
+            longitude = cameraLocationComponent.Position.X;
+            latitude = cameraLocationComponent.Position.Y;
+            altitude = cameraLocationComponent.Position.Z;
+
+            //
+        }
+        else
+        {
+            Debug.Log("CheckGeoPositionChanges() inside else");
+        }
+    }
+
+
+    
     private void Start()
     {
+        mapController = FindObjectOfType<MapController>();
         CreateArcGISMapComponent();
         CreateArcGISCamera();
         //CreateSkyComponent();
         CreateArcGISMap();
+    }
+
+    private void Update()
+    {
+        CheckGeoPositionChanges();
     }
 }
