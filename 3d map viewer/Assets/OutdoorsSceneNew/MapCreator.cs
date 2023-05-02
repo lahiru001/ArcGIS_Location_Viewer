@@ -10,7 +10,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 using System;
-[ExecuteAlways]
+//[ExecuteAlways]
 public class MapCreator : MonoBehaviour
 {
     public Location[] locations = new Location[4];
@@ -27,6 +27,19 @@ public class MapCreator : MonoBehaviour
     public ArcGISLocationComponent cameraLocationComponent;
     private MapController mapController;
 
+    private void Start()
+    {
+        mapController = FindObjectOfType<MapController>();
+        CreateArcGISMapComponent();
+        CreateArcGISCamera();
+        //CreateSkyComponent();
+        CreateArcGISMap();
+    }
+
+    private void Update()
+    {
+        CheckGeoPositionChanges();
+    }
     private void CreateArcGISMapComponent()
     {
         arcGISMapComponent = FindObjectOfType<ArcGISMapComponent>();
@@ -91,14 +104,16 @@ public class MapCreator : MonoBehaviour
             cameraLocationComponent.Rotation = new ArcGISRotation(65, 68, 0);
         }
     }
-    public void SetGeoPosition(double longitude, double latitude, double altitude)
+    public void SetGeoPosition(double longitude, double latitude, double altitude)//Set Geo position according to the user inputs
     {
         ArcGISPoint geographicCoordinates = new ArcGISPoint(longitude, latitude, altitude, ArcGISSpatialReference.WGS84());
         cameraLocationComponent.Position = geographicCoordinates;
         Debug.Log("##MAPCREATOR FUNCTION>> Altitude :" + altitude + "Longitude :" + longitude + "Latitude :" + latitude);
     }
     public void CheckGeoPositionChanges()
-    {
+    {//Check whether there are any changes of location by a user action(move the map).
+    //If there are any changes, then update those changes on displaying values(latitude,longitude,altitude) on headbar.
+
         if (((cameraLocationComponent.Position.X != longitude)||(cameraLocationComponent.Position.Y != latitude))|| (cameraLocationComponent.Position.Z != altitude))//(cameraLocationComponent.Position.Y != latitude) || (cameraLocationComponent.Position.Z != longitude)
         {
             double longitudeLocal = cameraLocationComponent.Position.X;
@@ -106,37 +121,16 @@ public class MapCreator : MonoBehaviour
             double altitudeLocal = cameraLocationComponent.Position.Z;
             bool t = (cameraLocationComponent.Position.X != longitude);
             mapController.UpdateGeoPosition(MapController.DataUpdater.MapCreator, longitudeLocal, latitudeLocal, altitudeLocal);
-            Debug.Log("CheckGeoPositionChanges() inside if");
-            Debug.Log("CheckGeoPositionChanges() position X " + cameraLocationComponent.Position.X + "longitude" + longitude);
-            Debug.Log("CheckGeoPositionChanges() position Y " + cameraLocationComponent.Position.Y + "latitude" + latitude);
-            Debug.Log("CheckGeoPositionChanges() position Z " + cameraLocationComponent.Position.Z + "altitude" + altitude);
-            Debug.Log("CheckGeoPositionChanges() T " +  t);
-
+           
             longitude = cameraLocationComponent.Position.X;
             latitude = cameraLocationComponent.Position.Y;
             altitude = cameraLocationComponent.Position.Z;
 
-            //
-        }
-        else
-        {
-            Debug.Log("CheckGeoPositionChanges() inside else");
+            
         }
     }
 
 
     
-    private void Start()
-    {
-        mapController = FindObjectOfType<MapController>();
-        CreateArcGISMapComponent();
-        CreateArcGISCamera();
-        //CreateSkyComponent();
-        CreateArcGISMap();
-    }
-
-    private void Update()
-    {
-        CheckGeoPositionChanges();
-    }
+    
 }

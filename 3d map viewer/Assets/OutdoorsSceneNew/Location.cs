@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+
 public class Location {
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
     public string locationName;
 
-    public Location(float lat, float lon, string name) {
+    public Location(double lat, double lon, string name) {
         latitude = lat;
         longitude = lon;
         locationName = name;
     }
+    
 }
