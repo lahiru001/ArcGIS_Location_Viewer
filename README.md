@@ -1,8 +1,7 @@
 # ArcGIS Location Viewer
 
 ArcGIS Location Viewer is a Unity-based application that provides a platform to explore real-world locations and 3D objects with OSM metadata. The application utilizes the ArcGIS Maps SDK for Unity to enable users to access real-world maps and 3D content in ArcGIS. 
-![Screenshot (12)](https://user-images.githubusercontent.com/59786507/235826770-665e2600-d881-4f2a-9455-2ecfc5e7e3ee.png)
-
+![Screenshot (12)](https://user-images.githubusercontent.com/59786507/235826934-4855dfcc-8f56-4cae-bf95-2f65f8e86d82.png)
 
 ## Getting Started
 
